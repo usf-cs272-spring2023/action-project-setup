@@ -9,7 +9,14 @@ inputs:
   test_repo:
     description: "Repository with test project code"
     required: true
-    default: "usf-cs272-spring2022/project-tests"
+  
+  user_cache:
+    description: "Commit SHA of project code"
+    required: true
+  
+  test_cache:
+    description: "Commit SHA of test code"
+    required: true
 
 outputs:
   user_path:
@@ -28,7 +35,7 @@ runs:
       uses: actions/cache@v2
       with:
         path: project-user
-        key: project-user-${{ github.sha }}
+        key: ${{ inputs.user_cache }}
 
     - name: "Clone User Code"
       id: clone_user
@@ -50,19 +57,12 @@ runs:
         echo "::set-output name=user_path::${USER_PATH}"
         echo "::endgroup::"
 
-    - name: "Check Test SHA"
-      id: check_sha
-      shell: bash
-      run: |
-        TEST_SHA=$(git ls-remote --refs https://github.com/${{ inputs.test_repo }}.git main | head -1 | cut -f 1)
-        echo "Test SHA: ${TEST_SHA}"
-
     - name: "Cache Test Code"
       id: cache_test
       uses: actions/cache@v2
       with:
         path: project-test
-        key: project-test-${{ hashFiles('project-test/**') }}
+        key: ${{ inputs.user_cache }}
 
     - name: "Clone Test Code"
       id: clone_test
@@ -76,6 +76,8 @@ runs:
       id: check_test
       shell: bash
       run: |
+        echo "::group::Listing files"
+        
         TEST_PATH="project-test"
         echo "Test Code"
         ls -ACGR ${TEST_PATH}/src
@@ -87,6 +89,7 @@ runs:
         ls -ACGR ${TEST_PATH}/expected-nix
         
         echo "::set-output name=test_path::${TEST_PATH}"
+        echo "::endgroup::"
 
     - name: "Setup Java"
       id: setup_java
