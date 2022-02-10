@@ -54,7 +54,8 @@ runs:
       id: check_sha
       shell: bash
       run: |
-        git ls-remote --refs https://github.com/${{ inputs.test_repo }}.git main | head -1 | cut -f 1
+        TEST_SHA=$(git ls-remote --refs https://github.com/${{ inputs.test_repo }}.git main | head -1 | cut -f 1)
+        echo "Test SHA: ${TEST_SHA}"
 
     - name: "Cache Test Code"
       id: cache_test
@@ -77,7 +78,7 @@ runs:
       run: |
         TEST_PATH="project-test"
         echo "Test Code"
-        ls -ACGR ${TEST_PATH}/**/*.java
+        ls -ACGR ${TEST_PATH}/src
         
         echo "Test Input"
         ls -ACGR ${TEST_PATH}/input
