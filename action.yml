@@ -44,7 +44,7 @@ runs:
       run: |
         USER_PATH="project-user"
         echo "User Code"
-        ls -ACGR ${USER_PATH}
+        ls -ACGR ${USER_PATH}/src/main/java
         
         echo "::set-output name=user_path::${USER_PATH}"
         echo "project-user-${{ github.sha }}
