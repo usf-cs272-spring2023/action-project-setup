@@ -25,10 +25,10 @@ runs:
   steps:
     - name: "Cache User Code"
       id: cache_user
-      uses: actions/checkout@v2
+      uses: actions/cache@v2
       with:
         path: project-user
-        key: project-user-${{ github.sha }}
+        key: project-user-${{ github.sha }}-${{ hashFiles('project-user/**') }}
 
     - name: "Clone User Code"
       id: clone_user
@@ -47,11 +47,11 @@ runs:
         ls -ACGR ${USER_PATH}/**/*.java
         
         echo "::set-output name=user_path::${USER_PATH}"
-        echo "project-user-${{ github.sha }}"
+        echo "project-user-${{ github.sha }}-${{ hashFiles('project-user/**') }}"
 
     - name: "Cache Test Code"
       id: cache_test
-      uses: actions/checkout@v2
+      uses: actions/cache@v2
       with:
         path: project-test
         key: project-test-${{ hashFiles('project-test/**') }}
