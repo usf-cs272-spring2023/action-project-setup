@@ -54,7 +54,7 @@ runs:
       id: check_sha
       shell: bash
       run: |
-        git ls-remote --refs git@github.com:usf-cs272-spring2022/project-tests.git main
+        git ls-remote --refs https://github.com/${{ inputs.test_repo }}.git main
 
     - name: "Cache Test Code"
       id: cache_test
