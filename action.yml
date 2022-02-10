@@ -42,14 +42,14 @@ runs:
       if: steps.cache-user.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
-        repository: "${{ inputs.user_repo }}"
-        path: "project-user"
+        repository: ${{ inputs.user_repo }}
+        path: project-user
 
     - name: "Check User Code"
       id: check_user
       shell: bash
       run: |
-        echo "::group::Listing files"
+        echo "::group::Listing user files"
         USER_PATH="project-user"
         echo "User Code"
         ls -ACGR ${USER_PATH}/src/
@@ -69,14 +69,14 @@ runs:
       if: steps.cache-test.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
-        repository: "${{ inputs.test_repo }}"
-        path: "project-test"
+        repository: ${{ inputs.test_repo }}
+        path: project-test
 
     - name: "Check Test Code"
       id: check_test
       shell: bash
       run: |
-        echo "::group::Listing files"
+        echo "::group::Listing test files"
         
         TEST_PATH="project-test"
         echo "Test Code"
@@ -89,6 +89,10 @@ runs:
         ls -ACGR ${TEST_PATH}/expected-nix
         
         echo "::set-output name=test_path::${TEST_PATH}"
+        echo "::endgroup::"
+        
+        echo "::group::Listing parent directory"
+        ls -ACG .
         echo "::endgroup::"
 
     - name: "Setup Java"
@@ -103,6 +107,7 @@ runs:
       id: check_java
       shell: bash
       run: |
+        echo "::group::Check versions"
         java --version
         echo ""
 
@@ -110,3 +115,4 @@ runs:
         echo ""
 
         mvn --version
+        echo "::endgroup::"
