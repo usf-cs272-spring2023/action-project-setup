@@ -54,7 +54,7 @@ runs:
       uses: actions/checkout@v2
       with:
         path: project-test
-        key: project-test-${{ hashFiles("project-test/**/*(.java|.xml|.json)") }}
+        key: project-test-${{ hashFiles("project-test/**/*.java") }}
 
     - name: "Clone Test Code"
       id: clone_test
