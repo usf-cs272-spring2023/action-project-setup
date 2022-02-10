@@ -1,0 +1,102 @@
+name: "Project Setup Action"
+description: "Reusable action for setting up project main and test code"
+
+inputs:
+  user_repo:
+    description: "Repository with user project code"
+    required: true
+  
+  test_repo:
+    description: "Repository with test project code"
+    required: true
+    default: "usf-cs272-spring2022/project-tests"
+
+outputs:
+  user_path:
+    description: "Path to user project code"
+    value: ${{ steps.check_user.outputs.user_path }}
+  
+  test_path:
+    description: "Path to test project code"
+    value: ${{ steps.check_test.outputs.user_path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Cache User Code"
+      id: cache_user
+      uses: actions/checkout@v2
+      with:
+        path: project-user
+        key: project-user-${{ github.sha }}
+
+    - name: "Clone User Code"
+      id: clone_user
+      if: steps.cache-user.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: "${{ inputs.user_repo }}"
+        path: "project-user"
+
+    - name: "Check User Code"
+      id: check_user
+      shell: bash
+      run: |
+        USER_PATH="project-user"
+        echo "User Code"
+        ls -ACGR ${USER_PATH}/**/*.java
+        
+        echo "::set-output name=user_path::${USER_PATH}"
+        echo "project-user-${{ github.sha }}"
+
+    - name: "Cache Test Code"
+      id: cache_test
+      uses: actions/checkout@v2
+      with:
+        path: project-test
+        key: project-test-${{ hashFiles("project-test/**/*(.java|.xml|.json)") }}
+
+    - name: "Clone Test Code"
+      id: clone_test
+      if: steps.cache-test.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
+      with:
+        repository: "${{ inputs.test_repo }}"
+        path: "project-test"
+
+    - name: "Check Test Code"
+      id: check_test
+      shell: bash
+      run: |
+        TEST_PATH="project-test"
+        echo "Test Code"
+        ls -ACGR ${TEST_PATH}/**/*.java
+        
+        echo "Test Input"
+        ls -ACGR ${TEST_PATH}/input
+        
+        echo "Test Output"
+        ls -ACGR ${TEST_PATH}/expected-nix
+        
+        echo "::set-output name=test_path::${TEST_PATH}"
+        echo "project-test-${{ hashFiles("project-test/**/*(.java|.xml|.json)") }}"
+
+    - name: "Setup Java"
+      id: setup_java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'maven'
+
+    - name: "Check Java"
+      id: check_java
+      shell: bash
+      run: |
+        java --version
+        echo ""
+
+        javac --version
+        echo ""
+
+        mvn --version
