@@ -62,7 +62,7 @@ runs:
       uses: actions/cache@v2
       with:
         path: project-test
-        key: ${{ inputs.user_cache }}
+        key: ${{ inputs.test_cache }}
 
     - name: "Clone Test Code"
       id: clone_test
