@@ -42,19 +42,19 @@ runs:
       id: check_user
       shell: bash
       run: |
+        echo "::group::Listing files"
         USER_PATH="project-user"
         echo "User Code"
         ls -ACGR ${USER_PATH}/src/
         
         echo "::set-output name=user_path::${USER_PATH}"
-        echo "project-user-${{ github.sha }}
+        echo "::endgroup::"
 
     - name: "Check Test SHA"
       id: check_sha
       shell: bash
       run: |
-        TEST_SHA=$(git ls-remote --refs git@github.com:usf-cs272-spring2022/project-tests.git main)
-        echo "Test SHA: ${TEST_SHA}"
+        git ls-remote --refs git@github.com:usf-cs272-spring2022/project-tests.git main
 
     - name: "Cache Test Code"
       id: cache_test
