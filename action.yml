@@ -18,14 +18,15 @@ inputs:
     description: "Commit SHA of test code"
     required: true
 
-outputs:
   user_path:
     description: "Path to user project code"
-    value: ${{ steps.check_user.outputs.user_path }}
+    required: true
+    default: "project-main"
   
   test_path:
     description: "Path to test project code"
-    value: ${{ steps.check_test.outputs.user_path }}
+    required: true
+    default: "project-tests"
 
 runs:
   using: "composite"
@@ -43,25 +44,22 @@ runs:
       uses: actions/checkout@v2
       with:
         repository: ${{ inputs.user_repo }}
-        path: project-user
+        path: ${{ inputs.user_path }}
 
     - name: "Check User Code"
       id: check_user
       shell: bash
       run: |
         echo "::group::Listing user files"
-        USER_PATH="project-user"
         echo "User Code"
-        ls -ACGR ${USER_PATH}/src/
-        
-        echo "::set-output name=user_path::${USER_PATH}"
+        ls -ACGR ${{ inputs.user_path }}/src/
         echo "::endgroup::"
 
     - name: "Cache Test Code"
       id: cache_test
       uses: actions/cache@v2
       with:
-        path: project-test
+        path: ${{ inputs.test_path }}
         key: ${{ inputs.test_cache }}
 
     - name: "Clone Test Code"
@@ -70,7 +68,7 @@ runs:
       uses: actions/checkout@v2
       with:
         repository: ${{ inputs.test_repo }}
-        path: project-test
+        path: ${{ inputs.test_path }}
 
     - name: "Check Test Code"
       id: check_test
@@ -78,17 +76,15 @@ runs:
       run: |
         echo "::group::Listing test files"
         
-        TEST_PATH="project-test"
         echo "Test Code"
-        ls -ACGR ${TEST_PATH}/src
+        ls -ACGR ${{ inputs.test_path }}/src
         
         echo "Test Input"
-        ls -ACGR ${TEST_PATH}/input
+        ls -ACGR ${{ inputs.test_path }}/input
         
         echo "Test Output"
-        ls -ACGR ${TEST_PATH}/expected-nix
-        
-        echo "::set-output name=test_path::${TEST_PATH}"
+        ls -ACGR ${{ inputs.test_path }}/expected-nix
+       
         echo "::endgroup::"
         
         echo "::group::Listing parent directory"
