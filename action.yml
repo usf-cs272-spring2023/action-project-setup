@@ -28,7 +28,7 @@ runs:
       uses: actions/cache@v2
       with:
         path: project-user
-        key: project-user-${{ github.sha }}-${{ hashFiles('project-user/**') }}
+        key: project-user-${{ github.sha }}
 
     - name: "Clone User Code"
       id: clone_user
@@ -44,10 +44,17 @@ runs:
       run: |
         USER_PATH="project-user"
         echo "User Code"
-        ls -ACGR ${USER_PATH}/**/*.java
+        ls -ACGR ${USER_PATH}
         
         echo "::set-output name=user_path::${USER_PATH}"
-        echo "project-user-${{ github.sha }}-${{ hashFiles('project-user/**') }}"
+        echo "project-user-${{ github.sha }}
+
+    - name: "Check Test SHA"
+      id: check_sha
+      shell: bash
+      run: |
+        TEST_SHA=$(git ls-remote git@github.com:${{ inputs.test_repo }}.git | head -1 | sed "s/HEAD//")
+        echo "Test SHA: ${TEST_SHA}"
 
     - name: "Cache Test Code"
       id: cache_test
