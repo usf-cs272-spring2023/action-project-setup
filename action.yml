@@ -54,7 +54,7 @@ runs:
       id: check_sha
       shell: bash
       run: |
-        git ls-remote --refs https://github.com/${{ inputs.test_repo }}.git main
+        git ls-remote --refs https://github.com/${{ inputs.test_repo }}.git main | head -1 | cut -f 1
 
     - name: "Cache Test Code"
       id: cache_test
