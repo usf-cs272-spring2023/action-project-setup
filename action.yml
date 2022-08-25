@@ -50,6 +50,7 @@ runs:
       id: check_user
       shell: bash
       run: |
+        echo " "
         echo "::group::Listing user files"
         echo "User Code"
         ls -ACGR ${{ inputs.user_path }}/src/
@@ -74,6 +75,7 @@ runs:
       id: check_test
       shell: bash
       run: |
+        echo " "
         echo "::group::Listing test files"
         
         echo "Test Code"
@@ -103,6 +105,7 @@ runs:
       id: check_java
       shell: bash
       run: |
+        echo " "
         echo "::group::Check versions"
         java --version
         echo ""
@@ -117,8 +120,9 @@ runs:
       shell: bash
       working-directory: "${{ inputs.user_path }}"
       run: |
+        echo " "
         mvn --version
-        echo ""
+        echo " "
 
         echo "::group::Resolving dependencies..."
         mvn dependency:go-offline
