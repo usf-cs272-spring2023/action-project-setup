@@ -81,14 +81,17 @@ runs:
         echo "Test Code"
         ls -ACGR ${{ inputs.test_path }}/src
         
+        echo " "
         echo "Test Input"
         ls -ACGR ${{ inputs.test_path }}/input
         
+        echo " "
         echo "Test Output"
         ls -ACGR ${{ inputs.test_path }}/expected-nix
        
         echo "::endgroup::"
         
+        echo " "
         echo "::group::Listing parent directory"
         ls -ACG .
         echo "::endgroup::"
