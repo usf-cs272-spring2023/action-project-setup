@@ -24,10 +24,12 @@ jobs:
  
     steps:
       - name: Get Test Commit SHA
+        id: test-commit
         uses: actions/github-script@v6
         env:
           REPO_NAME: "${{ env.TEST_REPO }}"
         with:
+          result-encoding: string
           script: |
             const params = {
               owner: context.repo.owner,
@@ -48,11 +50,13 @@ jobs:
             core.setFailed(`Unable to find commit SHA for: ${process.env.REPO_NAME}`);
 
       - name: Get Code Commit SHA
+        id: code-commit
         uses: actions/github-script@v6
         if: ${{ inputs.user_cache == '' }}
         env:
           REPO_NAME: "${{ inputs.user_repo }}"
         with:
+          result-encoding: string
           script: |
             const params = {
               owner: context.repo.owner,
@@ -72,14 +76,13 @@ jobs:
             core.info(`result: ${JSON.stringify(result)}`);
             core.setFailed(`Unable to find commit SHA for: ${process.env.REPO_NAME}`);
 
-
-      # - name: Check Results
-      #   id: check-results
-      #   uses: usf-cs272-fall2022/action-project-setup@main
-      #   with:
-      #     user_repo:  "${{ inputs.user_repo }}"
-      #     test_repo:  "${{ inputs.test_repo }}"
-      #     user_cache: "${{ inputs.user_cache }}"
-      #     test_cache: "${{ inputs.test_cache }}"
-      #     user_path:  "${{ inputs.user_path }}"
-      #     test_path:  "${{ inputs.test_path }}"
+      - name: Setup Project
+        id: setup-project
+        uses: usf-cs272-fall2022/action-project-setup@main
+        with:
+          user_repo:  "${{ inputs.user_repo }}"
+          user_cache: "${{ steps.code-result.outputs.result }}"
+          test_cache: "${{ steps.test-result.outputs.result }}"
+          test_repo:  "${{ env.TEST_REPO }}"
+          test_path:  "${{ env.TEST_PATH }}"
+          user_path:  "${{ env.USER_PATH }}"
