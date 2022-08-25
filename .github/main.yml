@@ -1,0 +1,52 @@
+name: 'Project Setup'
+
+on:
+  workflow_dispatch:
+    inputs:
+      user_repo:
+        description: "Repository with user project code"
+        required: true
+        default: "project-template"
+
+      user_cache:
+        description: "Commit SHA of project code"
+        required: false
+
+env:
+  TEST_REPO: "project-tests"
+  TEST_PATH: "project-tests"
+  USER_PATH: "project-main"
+
+jobs:
+  results:
+    runs-on: ubuntu-latest
+    name: Project Setup
+ 
+    steps:
+      - name: Get Test Commit SHA
+        uses: actions/github-script@v6
+        env:
+          REPO_NAME: "${{ env.TEST_REPO }}"
+        with:
+          script: |
+            const params = {
+              owner: context.repo.owner,
+              repo: process.env.REPO_NAME,
+              per_page: 1
+            };
+
+            core.info(JSON.stringify(params));
+
+            const result = await github.rest.repos.listCommits(params);
+            core.info(JSON.stringify(result));
+
+      # - name: Check Results
+      #   id: check-results
+      #   uses: usf-cs272-fall2022/action-project-setup@main
+      #   with:
+      #     user_repo:  "${{ inputs.user_repo }}"
+      #     test_repo:  "${{ inputs.test_repo }}"
+      #     user_cache: "${{ inputs.user_cache }}"
+      #     test_cache: "${{ inputs.test_cache }}"
+      #     user_path:  "${{ inputs.user_path }}"
+      #     test_path:  "${{ inputs.test_path }}"
