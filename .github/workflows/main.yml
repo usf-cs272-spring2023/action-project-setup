@@ -81,8 +81,8 @@ jobs:
         uses: usf-cs272-fall2022/action-project-setup@main
         with:
           user_repo:  "${{ inputs.user_repo }}"
-          user_cache: "${{ steps.code-result.outputs.result }}"
-          test_cache: "${{ steps.test-result.outputs.result }}"
+          user_cache: "${{ steps.code-commit.outputs.result }}"
+          test_cache: "${{ steps.test-commit.outputs.result }}"
           test_repo:  "${{ env.TEST_REPO }}"
           test_path:  "${{ env.TEST_PATH }}"
           user_path:  "${{ env.USER_PATH }}"
