@@ -35,10 +35,7 @@ jobs:
               per_page: 1
             };
 
-            core.info(`params: ${JSON.stringify(params)}`);
-
             const result = await github.rest.repos.listCommits(params);
-            core.info(`result: ${JSON.stringify(result)}`);
 
             if (result.status === 200 && result.data.length === 1) {
               const sha = result.status.data[0].sha;
@@ -46,6 +43,8 @@ jobs:
               return sha;
             }
 
+            core.info(`params: ${JSON.stringify(params)}`);
+            core.info(`result: ${JSON.stringify(result)}`);
             core.setFailed(`Unable to find commit SHA for: ${process.env.REPO_NAME}`);
 
       # - name: Check Results
