@@ -33,7 +33,7 @@ runs:
   steps:
     - name: "Cache User Code"
       id: cache_user
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: project-user
         key: ${{ inputs.user_cache }}
@@ -41,7 +41,7 @@ runs:
     - name: "Clone User Code"
       id: clone_user
       if: steps.cache-user.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ${{ inputs.user_repo }}
         path: ${{ inputs.user_path }}
@@ -57,7 +57,7 @@ runs:
 
     - name: "Cache Test Code"
       id: cache_test
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ inputs.test_path }}
         key: ${{ inputs.test_cache }}
@@ -65,7 +65,7 @@ runs:
     - name: "Clone Test Code"
       id: clone_test
       if: steps.cache-test.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: ${{ inputs.test_repo }}
         path: ${{ inputs.test_path }}
@@ -110,5 +110,16 @@ runs:
         javac --version
         echo ""
 
+        echo "::endgroup::"
+
+    - name: "Check Maven"
+      id: check_maven
+      shell: bash
+      run: |
         mvn --version
+        echo ""
+
+        echo "::group::Resolving dependencies..."
+        mvn dependency:go-offline
+        
         echo "::endgroup::"
