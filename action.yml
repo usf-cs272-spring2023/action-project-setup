@@ -115,6 +115,7 @@ runs:
     - name: "Check Maven"
       id: check_maven
       shell: bash
+      working-directory: "${{ inputs.user_path }}"
       run: |
         mvn --version
         echo ""
