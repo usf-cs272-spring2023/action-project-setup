@@ -38,7 +38,7 @@ jobs:
             const result = await github.rest.repos.listCommits(params);
 
             if (result.status === 200 && result.data.length === 1) {
-              const sha = result.status.data[0].sha;
+              const sha = result.data[0].sha;
               core.info(`sha: ${sha}`);
               return sha;
             }
