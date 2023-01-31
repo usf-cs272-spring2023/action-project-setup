@@ -78,7 +78,7 @@ jobs:
 
       - name: Setup Project
         id: setup-project
-        uses: usf-cs272-fall2022/action-project-setup@main
+        uses: usf-cs272-spring2023/action-project-setup@main
         with:
           user_repo:  "${{ github.repository_owner }}/${{ inputs.user_repo }}"
           user_cache: "${{ steps.code-commit.outputs.result }}"
